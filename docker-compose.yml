@@ -9,13 +9,35 @@ services:
       TRANSACTIONS_TOPIC: queueing.transactions
       TRANSACTIONS_PER_SECOND: 1
 
-  detector:
-    build: ./detector
+  # detector:
+  #   build: ./detector
+  #   environment:
+  #     KAFKA_BROKER_URL: broker:9092
+  #     TRANSACTIONS_TOPIC: queueing.transactions
+  #     LEGIT_TOPIC: streaming.transactions.legit
+  #     FRAUD_TOPIC: streaming.transactions.fraud
+
+  faust:
+    tty: true
+    build: ./faust
+    command: python app.py worker
     environment:
-      KAFKA_BROKER_URL: broker:9092
+      WORKER: example
+      WORKER_PORT: 6066
+      KAFKA_BOOTSTRAP_SERVER: kafka://broker:9092
+      KAFKA_BOOSTRAP_SERVER_NAME: broker
+      KAFKA_BOOSTRAP_SERVER_PORT: 9092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      SCHEMA_REGISTRY_SERVER: schema-registry
+      SCHEMA_REGISTRY_SERVER_PORT: 8081
       TRANSACTIONS_TOPIC: queueing.transactions
       LEGIT_TOPIC: streaming.transactions.legit
       FRAUD_TOPIC: streaming.transactions.fraud
+    ports:
+      - "8084:80"
+      - "8000:8000"
+    volumes:
+      - ./scripts:/faust/scripts
 
 # Give this composition access to the Kafka network
 networks:
