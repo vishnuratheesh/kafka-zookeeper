@@ -8,14 +8,8 @@ services:
       KAFKA_BROKER_URL: broker:9092
       TRANSACTIONS_TOPIC: queueing.transactions
       TRANSACTIONS_PER_SECOND: 1
-
-  # detector:
-  #   build: ./detector
-  #   environment:
-  #     KAFKA_BROKER_URL: broker:9092
-  #     TRANSACTIONS_TOPIC: queueing.transactions
-  #     LEGIT_TOPIC: streaming.transactions.legit
-  #     FRAUD_TOPIC: streaming.transactions.fraud
+    ports:
+      - "29999:19999"
 
   faust:
     tty: true
@@ -36,6 +30,7 @@ services:
     ports:
       - "8084:80"
       - "8000:8000"
+      - "39999:19999"
     volumes:
       - ./scripts:/faust/scripts
 
